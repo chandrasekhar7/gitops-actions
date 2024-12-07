@@ -83,5 +83,3 @@ module "ecr" {
     Terraform = "true"
   }
 }
-
-##
