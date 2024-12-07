@@ -38,7 +38,6 @@ module "eks" {
 
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.vpc.private_subnets
-  control_plane_subnet_ids = module.vpc.public_subnets
 
   create_cluster_security_group = false
   create_node_security_group    = false

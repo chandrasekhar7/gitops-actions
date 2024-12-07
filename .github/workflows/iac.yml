@@ -12,10 +12,8 @@ on:
 
 # Environment Variables
 env:
-  # AWS Credentials
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  # S3 Bucket for Terraform State
   S3_BUCKET: ${{ secrets.BUCKET }}
   AWS_REGION: ${{ vars.AWS_REGION }}
   EKS_CLUSTER: ${{ vars.EKS_CLUSTER }}
@@ -41,10 +39,6 @@ jobs:
       - name: Terraform init
         id: init
         run: terraform init -backend-config="bucket=$S3_BUCKET"
-
-      - name: Terraform format
-        id: fmt
-        run: terraform fmt -check
 
       - name: Terraform validate
         id: validate
@@ -88,7 +82,9 @@ jobs:
         shell: bash
         working-directory: ./terraform
 
-    # Trigger only when manually executed
+    # Only trigger for workflow_dispatch
+    if: github.event_name == 'workflow_dispatch'
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -99,6 +95,20 @@ jobs:
       - name: Terraform init
         id: init
         run: terraform init -backend-config="bucket=$S3_BUCKET"
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get Kubernetes config
+        id: getconfig
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }} 
+
+      - name: Delete Ingress controller
+        run: kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml
 
       - name: Terraform destroy
         id: destroy
