@@ -2,7 +2,7 @@ terraform {
   required_version = "~> 1.0"
   backend "s3" {
     bucket = "infrabucket-iacgitops-eu-west-2"
-    key = "gitops-actions/state.tfstate"
+    key    = "gitops-actions/state.tfstate"
     region = "eu-west-2"
   }
   required_providers {
@@ -11,11 +11,11 @@ terraform {
       version = "~> 5.7"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "~> 2.3"
     }
     helm = {
-      source = "hashicorp/helm"
+      source  = "hashicorp/helm"
       version = "~> 2.16"
     }
   }

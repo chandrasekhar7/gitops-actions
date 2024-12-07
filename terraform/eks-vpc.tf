@@ -12,8 +12,8 @@ module "vpc" {
   private_subnets = var.private_subnet_cidr_blocks
   public_subnets  = var.public_subnet_cidr_blocks
 
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
   public_subnet_tags = {
@@ -35,16 +35,16 @@ module "eks" {
   cluster_name                   = var.name
   cluster_version                = var.k8s_version
   cluster_endpoint_public_access = true
-  
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.private_subnets
   control_plane_subnet_ids = module.vpc.public_subnets
 
   create_cluster_security_group = false
   create_node_security_group    = false
 
   enable_cluster_creator_admin_permissions = true
-  
+
   cluster_addons = {
     coredns = {
       most_recent = true
@@ -56,13 +56,13 @@ module "eks" {
       most_recent = true
     }
   }
-  
+
   eks_managed_node_groups = {
     initial = {
       instance_types = ["t3.small"]
-      min_size     = 2
-      max_size     = 4
-      desired_size = 2
+      min_size       = 2
+      max_size       = 4
+      desired_size   = 2
     }
   }
 
@@ -73,9 +73,9 @@ module "ecr" {
   source  = "terraform-aws-modules/ecr/aws"
   version = "2.3.0"
 
-  repository_name = "gitops-webapp"
+  repository_name    = "gitops-webapp"
   registry_scan_type = "BASIC"
-  repository_type = "private"
+  repository_type    = "private"
 
   tags = {
     Terraform = "true"
