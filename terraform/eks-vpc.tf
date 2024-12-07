@@ -42,6 +42,8 @@ module "eks" {
 
   create_cluster_security_group = false
   create_node_security_group    = false
+
+  enable_cluster_creator_admin_permissions = true
   
   cluster_addons = {
     coredns = {
@@ -57,7 +59,7 @@ module "eks" {
   
   eks_managed_node_groups = {
     initial = {
-      instance_types = ["t2.micro"]
+      instance_types = ["t3.small"]
       min_size     = 2
       max_size     = 4
       desired_size = 2
@@ -65,4 +67,17 @@ module "eks" {
   }
 
   tags = var.tags
+}
+
+module "ecr" {
+  source  = "terraform-aws-modules/ecr/aws"
+  version = "2.3.0"
+
+  repository_name = "gitops-webapp"
+  registry_scan_type = "BASIC"
+  repository_type = "private"
+
+  tags = {
+    Terraform = "true"
+  }
 }

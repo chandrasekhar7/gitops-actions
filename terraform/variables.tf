@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable name {
-    default = "githubaction-eks"
+    default = "githubactions-eks"
 }
 
 variable k8s_version {
