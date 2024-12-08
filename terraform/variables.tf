@@ -8,6 +8,10 @@ variable "name" {
   default = "githubactions-eks"
 }
 
+variable "ecr_repo" {
+  default = "gitops-webapp"
+}
+
 variable "k8s_version" {
   default = "1.31"
 }
